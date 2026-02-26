@@ -31,7 +31,7 @@ def U_interval(u, v): # d(u,v) = |Union_i [u_i, max(u_i, v_i)]|
     order = torch.argsort(u, dim=-1)
     u, end = torch.gather(u, -1, order), torch.gather(end, -1, order)
     running_end = torch.cat([u[...,:1], torch.cummax(end[...,:-1], dim=-1).values], dim=-1)
-    return torch.clamp(end - torch.max(u, running_end), min=0).sum(-1)
+    return F.relu(end - torch.max(u, running_end)).sum(-1)
 
 class IQE(nn.Module):
     def __init__(self, d_head=16):
